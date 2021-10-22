@@ -5,6 +5,8 @@ const cors = require("cors");
 const usersRouter = require("./routes/users/users");
 const contactsRouter = require("./routes/contacts/contacts");
 
+const { HttpCode } = require("./config/HttpCode");
+
 const app = express();
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
@@ -17,11 +19,11 @@ app.use("/api/users", usersRouter);
 app.use("/api/contacts", contactsRouter);
 
 app.use((_req, res) => {
-  res.status(404).json({ message: "Not found" });
+  res.status(HttpCode.NOT_FOUND).json({ message: "Not found" });
 });
 
 app.use((err, _req, res, _next) => {
-  res.status(500).json({ message: err.message });
+  res.status(HttpCode.INTERNAL_SERVER_ERROR).json({ message: err.message });
 });
 
 module.exports = app;
