@@ -7,7 +7,7 @@ const {
   addContact,
   updateContact,
   updateStatusContact,
-} = require("../repository");
+} = require("../repository/contacts");
 
 const getListContacts = async (_req, res, _next) => {
   const contacts = await listContacts();

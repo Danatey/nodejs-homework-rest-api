@@ -4,6 +4,26 @@ const { HttpCode } = require("../config/HttpCode");
 require("dotenv").config();
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 
+const current = async (req, res, next) => {
+  try {
+    const user = await Users.currentUser(req.user.token);
+    if (!user) {
+      return res.status(HttpCode.UNAUTHORIZED).json({
+        status: "error",
+        code: HttpCode.UNAUTHORIZED,
+        message: "Not authorized",
+      });
+    }
+    res.json({
+      status: "success",
+      code: HttpCode.OK,
+      data: { email: user.email, subscription: user.subscription },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const signup = async (req, res, next) => {
   const { email, password } = req.body;
   const user = await Users.findByEmail(email);
@@ -37,7 +57,7 @@ const login = async (req, res, _next) => {
     return res.status(HttpCode.UNAUTHORIZED).json({
       status: "error",
       code: HttpCode.UNAUTHORIZED,
-      message: "Invalid credentials",
+      message: "Email or password is wrong",
     });
   }
   const id = user._id;
@@ -49,6 +69,10 @@ const login = async (req, res, _next) => {
     code: HttpCode.OK,
     date: {
       token,
+      user: {
+        email: email,
+        subscription: "starter",
+      },
     },
   });
 };
@@ -56,10 +80,11 @@ const login = async (req, res, _next) => {
 const logout = async (req, res, _next) => {
   const id = req.user._id;
   await Users.updateToken(id, null);
-  return res.status(HttpCode.NO_CONTENT).json({ test: "test" });
+  return res.status(HttpCode.NO_CONTENT).json({ Status: "204 No Content" });
 };
 
 module.exports = {
+  current,
   signup,
   login,
   logout,

@@ -4,10 +4,8 @@ const reqularEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const { HttpCode } = require("../../config/HttpCode");
 
 const schemaUser = Joi.object({
-  password: Joi.string().alphanum().min(5).max(25).required(),
   email: Joi.string().pattern(new RegExp(reqularEmail)).required(),
-  subscription: Joi.string().alphanum(),
-  token: Joi.string().alphanum(),
+  password: Joi.string().alphanum().min(5).max(25).required(),
 });
 
 const validate = async (schema, obj, res, next) => {
