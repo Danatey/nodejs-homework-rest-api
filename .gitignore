@@ -1,5 +1,9 @@
 node_modules
 
+uploads
+
+public
+
 .vscode
 
 .env

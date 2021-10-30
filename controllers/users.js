@@ -42,6 +42,7 @@ const signup = async (req, res, next) => {
       user: {
         email: newUser.email,
         password: newUser.password,
+        avatar: newUser.avatarURL,
       },
     });
   } catch (error) {
