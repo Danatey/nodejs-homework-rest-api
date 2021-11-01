@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
+const fs = require("fs/promises");
 const Users = require("../repository/users");
 const { HttpCode } = require("../config/HttpCode");
+const UploadService = require("../servises/cloud-upload");
+
 require("dotenv").config();
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -84,9 +87,37 @@ const logout = async (req, res, _next) => {
   return res.status(HttpCode.NO_CONTENT).json({ Status: "204 No Content" });
 };
 
+const uploadAvatar = async (req, res, _next) => {
+  const { id, idUserCloud } = req.user;
+  const file = req.file;
+  console.log(req);
+
+  const destination = "Avatars";
+  const uploadService = new UploadService(destination);
+  const { avatarUrl, returnIdUserCloud } = await uploadService.save(
+    file.path,
+    idUserCloud
+  );
+
+  await Users.updateAvatar(id, avatarUrl, returnIdUserCloud);
+  try {
+    await fs.unlink(file.path);
+  } catch (error) {
+    console.log(error.message);
+  }
+  return res.status(HttpCode.OK).json({
+    status: "success",
+    code: HttpCode.OK,
+    data: {
+      avatarURL: avatarUrl,
+    },
+  });
+};
+
 module.exports = {
   current,
   signup,
   login,
   logout,
+  uploadAvatar,
 };
