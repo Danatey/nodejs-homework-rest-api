@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
-const nanoid = require("nanoid");
+const crypto = require("crypto");
 const SALT_FACTOR = 4;
 
 const userSchema = new Schema(
@@ -38,7 +38,7 @@ const userSchema = new Schema(
     verificationToken: {
       type: String,
       required: [true, "Verify token is required"],
-      default: nanoid(),
+      default: crypto.randomUUID(),
     },
   },
   {

@@ -16,8 +16,8 @@ const wrapper = (fn) => async (req, res, next) => {
       case "CustomError":
         res.status(error.status).json({
           status: "error",
-          code: HttpCode.NOT_FOUND,
-          message: "User not found",
+          code: HttpCode.BAD_REQUEST,
+          message: "CustomError",
         });
         break;
       default:
